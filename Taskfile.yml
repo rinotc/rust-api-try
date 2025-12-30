@@ -1,0 +1,19 @@
+version: '3'
+
+tasks:
+  migrate:
+    desc: データベースマイグレーションを実行します
+    summary: |
+      account/migration/migrate.sh を使用してデータベースマイグレーションを実行します。
+      DATABASE_URL を引数または環境変数として渡すことで上書き可能です。
+    cmds:
+      - ./account/migration/migrate.sh {{.DATABASE_URL | default ""}}
+
+  generate-orm:
+    desc: Sea-ORM エンティティを生成します
+    summary: |
+      account/migration/generate-orm.sh を使用して Sea-ORM エンティティを生成します。
+      生成前に 'migrate fresh' が実行されます。
+      DATABASE_URL を引数または環境変数として渡すことで上書き可能です。
+    cmds:
+      - ./account/migration/generate-orm.sh {{.DATABASE_URL | default ""}}

@@ -1,4 +1,12 @@
-GET http://localhost:3000/users/1
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "name": "Tanaka Taro"
+}
+
+###
+GET http://localhost:3000/users/e67ff8dc-c7f2-4a6a-a2ec-a2985c0994cf
 Accept: application/json
 
 ###
