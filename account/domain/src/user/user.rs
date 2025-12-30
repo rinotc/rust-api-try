@@ -56,11 +56,11 @@ pub struct User {
 
 impl User {
     // static メソッド
-    pub fn create(name: &str, role: UserRole) -> Self {
+    pub fn create(name: String) -> Self {
         Self {
             id: UserId::new(),
-            name: name.to_string(),
-            role,
+            name,
+            role: UserRole::User,
         }
     }
 
