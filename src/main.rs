@@ -3,13 +3,13 @@ mod usecase;
 mod libs;
 mod api;
 
-use crate::api::user_handler::{get_user_handler, AppState};
+use crate::api::state::AppState;
+use crate::api::user_handler::get_user_handler;
 use crate::domain::user_repository::InMemoryUserRepository;
 use crate::domain::user_repository::UserRepository;
 use crate::usecase::get_user_usecase::GetUserUseCase;
 use axum::routing::get;
 use axum::Router;
-use serde::Serialize;
 use std::sync::Arc;
 
 #[tokio::main]

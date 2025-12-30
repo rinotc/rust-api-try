@@ -16,6 +16,7 @@ pub struct GetUserInput {
 }
 impl Input<GetUserOutput> for GetUserInput {}
 
+#[derive(Clone)]
 pub struct GetUserUseCase {
     user_repository: Arc<dyn UserRepository>
 }

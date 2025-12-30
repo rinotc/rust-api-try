@@ -13,20 +13,14 @@ pub struct UserResponse {
     name: String,
     is_admin: bool,
 }
-
-pub struct AppState {
-    pub get_user_usecase: GetUserUseCase
-}
-
 // ハンドラ（非同期関数）
 pub async fn get_user_handler(
-    State(state): State<Arc<AppState>>,
+    State(usecase): State<GetUserUseCase>,
     Path(user_id): Path<u64>
 ) -> Result<Json<UserResponse>, axum::http::StatusCode> {
-    let id = UserId(user_id);
-    let input = GetUserInput { user_id: id };
+    let input = GetUserInput { user_id: UserId(user_id) };
 
-    match state.get_user_usecase.execute(input) {
+    match usecase.execute(input) {
         GetUserOutput::Success(user) => Ok(
             Json(UserResponse {
                 id: user.id.0,
