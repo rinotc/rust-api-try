@@ -1,54 +1,34 @@
 mod domain;
 mod usecase;
 mod libs;
+mod api;
 
-use axum::extract::{Path, State};
-use axum::routing::get;
-use axum::{Json, Router};
-use serde::Serialize;
-use std::sync::Arc;
-use crate::domain::domain_error::DomainError;
-use crate::domain::user::UserId;
+use crate::api::user_handler::{get_user_handler, AppState};
 use crate::domain::user_repository::InMemoryUserRepository;
 use crate::domain::user_repository::UserRepository;
-
-
-#[derive(Serialize)]
-struct UserResponse {
-    id: u64,
-    name: String,
-    is_admin: bool,
-}
-
-// ハンドラ（非同期関数）
-async fn get_user_handler(
-    State(repository): State<Arc<dyn UserRepository>>,
-    Path(user_id): Path<u64>
-) -> Result<Json<UserResponse>, axum::http::StatusCode> {
-    let id = UserId(user_id);
-
-    repository.find_by_id(id)
-        .map(|user| {
-            Json(UserResponse {
-                id: user.id.0,
-                is_admin: user.is_admin(),
-                name: user.name,
-            })
-        })
-        .map_err(|e| match e {
-            DomainError::NotFound => axum::http::StatusCode::NOT_FOUND,
-            _ => axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-        })
-}
+use crate::usecase::get_user_usecase::GetUserUseCase;
+use axum::routing::get;
+use axum::Router;
+use serde::Serialize;
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() {
+    // 1. インフラ層の生成
     let user_repository = Arc::new(InMemoryUserRepository) as Arc<dyn UserRepository>;
+
+    // 2. ユースケース層の生成
+    let get_user_usecase = GetUserUseCase::new(user_repository);
+
+    // 2. アプリケーション状態
+    let state = Arc::new(AppState {
+        get_user_usecase
+    });
 
     // ルーターの設定
     let app = Router::new()
         .route("/users/{use_id}", get(get_user_handler))
-        .with_state(user_repository);
+        .with_state(state);
 
     // サーバーの起動
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await.unwrap();

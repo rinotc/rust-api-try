@@ -19,6 +19,11 @@ impl Input<GetUserOutput> for GetUserInput {}
 pub struct GetUserUseCase {
     user_repository: Arc<dyn UserRepository>
 }
+impl GetUserUseCase {
+    pub fn new(user_repository: Arc<dyn UserRepository>) -> Self {
+        Self { user_repository }
+    }
+}
 
 impl UseCase<GetUserInput, GetUserOutput> for GetUserUseCase {
     fn execute(&self, input: GetUserInput) -> GetUserOutput {
