@@ -1,8 +1,8 @@
-use crate::domain::domain_error::DomainError;
-use crate::domain::user::{User, UserId};
-use crate::domain::user_repository::UserRepository;
-use crate::libs::usecase::{Input, Output, UseCase};
 use std::sync::Arc;
+use account_domain::user::domain_error::DomainError;
+use account_domain::user::user::{User, UserId};
+use account_domain::user::user_repository::UserRepository;
+use account_libs::usecase::{Input, Output, UseCase};
 
 pub enum GetUserOutput {
     Success(User),

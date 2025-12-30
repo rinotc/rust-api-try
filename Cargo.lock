@@ -3,6 +3,34 @@
 version = 4
 
 [[package]]
+name = "account-api"
+version = "0.1.0"
+dependencies = [
+ "account-domain",
+ "account-infra",
+ "account-libs",
+ "axum",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "account-domain"
+version = "0.1.0"
+
+[[package]]
+name = "account-infra"
+version = "0.1.0"
+dependencies = [
+ "account-domain",
+]
+
+[[package]]
+name = "account-libs"
+version = "0.1.0"
+
+[[package]]
 name = "atomic-waker"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -340,16 +368,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed2bf2547551a7053d6fdfafda3f938979645c44812fbfcda098faae3f1a362d"
 dependencies = [
  "bitflags",
-]
-
-[[package]]
-name = "rust-api-try"
-version = "0.1.0"
-dependencies = [
- "axum",
- "serde",
- "serde_json",
- "tokio",
 ]
 
 [[package]]

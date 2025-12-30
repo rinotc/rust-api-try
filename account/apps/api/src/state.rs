@@ -1,6 +1,6 @@
-use std::sync::Arc;
-use axum::extract::FromRef;
 use crate::usecase::get_user_usecase::GetUserUseCase;
+use axum::extract::FromRef;
+use std::sync::Arc;
 
 pub struct AppState {
     pub get_user_usecase: GetUserUseCase

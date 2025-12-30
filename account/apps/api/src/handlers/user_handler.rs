@@ -1,11 +1,10 @@
-use crate::domain::user::UserId;
-use crate::libs::usecase::UseCase;
-use crate::usecase::get_user_usecase::{GetUserInput, GetUserOutput, GetUserUseCase};
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::Json;
 use serde::Serialize;
-use std::sync::Arc;
+use account_domain::user::user::UserId;
+use account_libs::usecase::UseCase;
+use crate::usecase::get_user_usecase::{GetUserInput, GetUserOutput, GetUserUseCase};
 
 #[derive(Serialize)]
 pub struct UserResponse {
@@ -17,7 +16,7 @@ pub struct UserResponse {
 pub async fn get_user_handler(
     State(usecase): State<GetUserUseCase>,
     Path(user_id): Path<u64>
-) -> Result<Json<UserResponse>, axum::http::StatusCode> {
+) -> Result<Json<UserResponse>, StatusCode> {
     let input = GetUserInput { user_id: UserId(user_id) };
 
     match usecase.execute(input) {
