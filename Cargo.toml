@@ -1,8 +1,9 @@
 [workspace]
 members = [
     "account/domain",
+    "account/migration",
     "account/infra",
     "account/apps/api",
     "account/libs"
-]
+, "account/infra-orm"]
 resolver = "2"

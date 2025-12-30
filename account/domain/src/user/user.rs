@@ -1,5 +1,18 @@
+use uuid::Uuid;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UserId(pub u64);
+pub struct UserId(pub Uuid);
+
+impl UserId {
+    fn new() -> Self {
+        Self(Uuid::new_v4())
+    }
+
+    pub fn from_str(s: &str) -> Self {
+        let uuid = Uuid::parse_str(s).unwrap();
+        Self(uuid)
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum UserRole {
@@ -16,8 +29,12 @@ pub struct User {
 
 impl User {
     // static メソッド
-    pub fn new(id: u64, name: &str, role: UserRole) -> Self {
-        Self { id: UserId(id), name: name.to_string(), role }
+    pub fn create(name: &str, role: UserRole) -> Self {
+        Self { id: UserId::new(), name: name.to_string(), role }
+    }
+
+    pub fn reconstruct(id: UserId, name: String, role: UserRole) -> Self {
+        Self { id, name, role }
     }
 
     // 通常のメソッド

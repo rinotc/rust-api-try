@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 account-domain = { path = "../domain" }
+uuid = { version = "1.19.0", features = ["v4", "serde"]}
