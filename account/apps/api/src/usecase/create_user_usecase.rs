@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use tracing::instrument;
+use tracing::{error, instrument};
 use account_domain::user::user::{User, UserRole};
 use account_domain::user::user_repository::UserRepository;
 
@@ -10,7 +10,7 @@ pub struct CreateUserInput {
 
 pub enum CreateUserOutput {
     Success(User),
-    Error(String)
+    Error
 }
 
 #[derive(Clone)]
@@ -28,7 +28,10 @@ impl CreateUserUseCase {
         let user = User::create(input.name);
         match self.user_repository.insert(&user).await {
             Ok(_) => CreateUserOutput::Success(user),
-            Err(_) => CreateUserOutput::Error("Internal Infrastructure Error".to_string())
+            Err(e) => {
+                error!("Database error occurred while creating user: {:?}", e);
+                CreateUserOutput::Error
+            }
         }
     }
 }

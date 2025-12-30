@@ -54,6 +54,6 @@ pub async fn create_user_handler(
 
     match usecase.execute(input).await {
         CreateUserOutput::Success(user) => Ok(Json(UserResponse::from(user))),
-        CreateUserOutput::Error(_) => Err(StatusCode::INTERNAL_SERVER_ERROR)
+        CreateUserOutput::Error => Err(StatusCode::INTERNAL_SERVER_ERROR)
     }
 }
