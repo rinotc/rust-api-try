@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use async_trait::async_trait;
 use account_domain::user::domain_error::DomainError;
 use account_domain::user::user::{User, UserId};
 use account_domain::user::user_repository::UserRepository;
@@ -26,9 +27,10 @@ impl GetUserUseCase {
     }
 }
 
+#[async_trait]
 impl UseCase<GetUserInput, GetUserOutput> for GetUserUseCase {
-    fn execute(&self, input: GetUserInput) -> GetUserOutput {
-        match self.user_repository.find_by_id(input.user_id.clone()) {
+    async fn execute(&self, input: GetUserInput) -> GetUserOutput {
+        match self.user_repository.find_by_id(input.user_id.clone()).await {
             Ok(user) => GetUserOutput::Success(user),
             Err(DomainError::NotFound) => GetUserOutput::NotFound(input.user_id),
             Err(_) => GetUserOutput::Error("Internal Infrastructure Error".to_string())

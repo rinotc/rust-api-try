@@ -1,4 +1,4 @@
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/d8bc0e30-66b3-4348-8cd8-74d1ce6f9947
 Accept: application/json
 
 ###

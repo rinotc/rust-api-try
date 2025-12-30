@@ -1,10 +1,11 @@
 use std::net::TcpListener;
 use crate::usecase::get_user_usecase::GetUserUseCase;
 use account_domain::user::user_repository::UserRepository;
-use account_infra::user::in_memory_user_repository::InMemoryUserRepository;
 use std::sync::Arc;
 use axum::Router;
 use axum::routing::get;
+use sea_orm::Database;
+use account_infra::user::postgres_user_repository::PostgresUserRepository;
 use crate::handlers::user_handler::get_user_handler;
 
 mod handlers;
@@ -13,7 +14,9 @@ mod usecase;
 
 #[tokio::main]
 async fn main() {
-    let user_repository = Arc::new(InMemoryUserRepository) as Arc<dyn UserRepository>;
+    let database_url = "postgres://user:password@localhost:5432/myapp";
+    let db = Database::connect(database_url).await.expect("Failed to connect to database");
+    let user_repository = Arc::new(PostgresUserRepository::new(db)) as Arc<dyn UserRepository>;
 
     let get_user_usecase = GetUserUseCase::new(user_repository);
 

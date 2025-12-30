@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -7,10 +8,14 @@ impl UserId {
     fn new() -> Self {
         Self(Uuid::new_v4())
     }
+}
 
-    pub fn from_str(s: &str) -> Self {
-        let uuid = Uuid::parse_str(s).unwrap();
-        Self(uuid)
+impl FromStr for UserId {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Uuid::parse_str(s)
+            .map(|uuid| Self(uuid))
+            .map_err(|e| format!("invalid UUID: {}", e))
     }
 }
 
@@ -18,6 +23,28 @@ impl UserId {
 pub enum UserRole {
     Admin,
     User,
+}
+
+impl UserRole {
+    pub fn code(&self) -> &'static str {
+        match self {
+            Self::Admin => "ADMIN",
+            Self::User => "USER",
+        }
+    }
+
+    const VARIANTS: &'static [Self] = &[Self::Admin, Self::User];
+}
+
+impl FromStr for UserRole {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::VARIANTS
+            .iter()
+            .find(|v| v.code() == s)
+            .cloned()
+            .ok_or_else(|| format!("invalid role: {}", s))
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -30,7 +57,11 @@ pub struct User {
 impl User {
     // static メソッド
     pub fn create(name: &str, role: UserRole) -> Self {
-        Self { id: UserId::new(), name: name.to_string(), role }
+        Self {
+            id: UserId::new(),
+            name: name.to_string(),
+            role,
+        }
     }
 
     pub fn reconstruct(id: UserId, name: String, role: UserRole) -> Self {

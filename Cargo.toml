@@ -4,6 +4,7 @@ members = [
     "account/migration",
     "account/infra",
     "account/apps/api",
-    "account/libs"
-, "account/infra-orm"]
+    "account/libs",
+    "account/infra-orm"
+]
 resolver = "2"
