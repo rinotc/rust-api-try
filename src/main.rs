@@ -1,4 +1,5 @@
-use axum::extract::Path;
+use std::sync::Arc;
+use axum::extract::{Path, State};
 use axum::{Json, Router};
 use axum::routing::get;
 use serde::Serialize;
@@ -31,6 +32,29 @@ impl User {
     }
 }
 
+#[derive(Debug)]
+pub enum DomainError {
+    NotFound,
+    InfrastructureError,
+}
+
+pub trait  UserRepository: Send + Sync {
+    fn find_by_id(&self, id: UserId) -> Result<User, DomainError>;
+}
+
+pub struct InMemoryUserRepository;
+
+impl UserRepository for InMemoryUserRepository {
+    fn find_by_id(&self, id: UserId) -> Result<User, DomainError> {
+        match id.0 {
+            1 => Ok(User::new(id.0, "name", UserRole::Admin)),
+            2 => Ok(User::new(id.0, "name", UserRole::User)),
+            3 => Err(DomainError::NotFound),
+            _ => Err(DomainError::InfrastructureError),
+        }
+    }
+}
+
 #[derive(Serialize)]
 struct UserResponse {
     id: u64,
@@ -39,22 +63,34 @@ struct UserResponse {
 }
 
 // ハンドラ（非同期関数）
-async fn get_user_handler(Path(user_id): Path<u64>) -> Json<UserResponse> {
-    // 本来はここでリポジトリを呼び出す
-    let user = User::new(user_id, "Rustacean", UserRole::User);
+async fn get_user_handler(
+    State(repository): State<Arc<dyn UserRepository>>,
+    Path(user_id): Path<u64>
+) -> Result<Json<UserResponse>, axum::http::StatusCode> {
+    let id = UserId(user_id);
 
-    Json(UserResponse {
-        id: user.id.0,
-        is_admin: user.is_admin(),
-        name: user.name,
-    })
+    repository.find_by_id(id)
+        .map(|user| {
+            Json(UserResponse {
+                id: user.id.0,
+                is_admin: user.is_admin(),
+                name: user.name,
+            })
+        })
+        .map_err(|e| match e {
+            DomainError::NotFound => axum::http::StatusCode::NOT_FOUND,
+            _ => axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+        })
 }
 
 #[tokio::main]
 async fn main() {
+    let user_repository = Arc::new(InMemoryUserRepository) as Arc<dyn UserRepository>;
+
     // ルーターの設定
     let app = Router::new()
-        .route("/users/{use_id}", get(get_user_handler));
+        .route("/users/{use_id}", get(get_user_handler))
+        .with_state(user_repository);
 
     // サーバーの起動
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await.unwrap();
