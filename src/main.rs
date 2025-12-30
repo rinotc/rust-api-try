@@ -1,20 +1,17 @@
 mod domain;
+mod usecase;
+mod libs;
 
 use axum::extract::{Path, State};
 use axum::routing::get;
 use axum::{Json, Router};
 use serde::Serialize;
 use std::sync::Arc;
-
+use crate::domain::domain_error::DomainError;
 use crate::domain::user::UserId;
 use crate::domain::user_repository::InMemoryUserRepository;
 use crate::domain::user_repository::UserRepository;
 
-#[derive(Debug)]
-pub enum DomainError {
-    NotFound,
-    InfrastructureError,
-}
 
 #[derive(Serialize)]
 struct UserResponse {
