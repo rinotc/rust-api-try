@@ -1,58 +1,19 @@
-use std::sync::Arc;
+mod domain;
+
 use axum::extract::{Path, State};
-use axum::{Json, Router};
 use axum::routing::get;
+use axum::{Json, Router};
 use serde::Serialize;
+use std::sync::Arc;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct UserId(u64);
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum UserRole {
-    Admin,
-    User,
-}
-
-#[derive(Debug, Clone)]
-pub struct User {
-    pub id: UserId,
-    pub name: String,
-    pub role: UserRole,
-}
-
-impl User {
-    // static メソッド
-    pub fn new(id: u64, name: &str, role: UserRole) -> Self {
-        Self { id: UserId(id), name: name.to_string(), role }
-    }
-
-    // 通常のメソッド
-    pub fn is_admin(&self) -> bool {
-        matches!(self.role, UserRole::Admin)
-    }
-}
+use crate::domain::user::UserId;
+use crate::domain::user_repository::InMemoryUserRepository;
+use crate::domain::user_repository::UserRepository;
 
 #[derive(Debug)]
 pub enum DomainError {
     NotFound,
     InfrastructureError,
-}
-
-pub trait  UserRepository: Send + Sync {
-    fn find_by_id(&self, id: UserId) -> Result<User, DomainError>;
-}
-
-pub struct InMemoryUserRepository;
-
-impl UserRepository for InMemoryUserRepository {
-    fn find_by_id(&self, id: UserId) -> Result<User, DomainError> {
-        match id.0 {
-            1 => Ok(User::new(id.0, "name", UserRole::Admin)),
-            2 => Ok(User::new(id.0, "name", UserRole::User)),
-            3 => Err(DomainError::NotFound),
-            _ => Err(DomainError::InfrastructureError),
-        }
-    }
 }
 
 #[derive(Serialize)]

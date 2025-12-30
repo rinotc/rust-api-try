@@ -1,0 +1,19 @@
+use crate::domain::user::{User, UserId, UserRole};
+use crate::DomainError;
+
+pub trait  UserRepository: Send + Sync {
+    fn find_by_id(&self, id: UserId) -> Result<User, DomainError>;
+}
+
+pub struct InMemoryUserRepository;
+
+impl UserRepository for InMemoryUserRepository {
+    fn find_by_id(&self, id: UserId) -> Result<User, DomainError> {
+        match id.0 {
+            1 => Ok(User::new(id.0, "name", UserRole::Admin)),
+            2 => Ok(User::new(id.0, "name", UserRole::User)),
+            3 => Err(DomainError::NotFound),
+            _ => Err(DomainError::InfrastructureError),
+        }
+    }
+}
