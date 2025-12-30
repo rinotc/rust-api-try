@@ -2,15 +2,16 @@ mod domain;
 mod usecase;
 mod libs;
 mod api;
+mod infra;
 
 use crate::api::state::AppState;
 use crate::api::user_handler::get_user_handler;
-use crate::domain::user_repository::InMemoryUserRepository;
 use crate::domain::user_repository::UserRepository;
 use crate::usecase::get_user_usecase::GetUserUseCase;
 use axum::routing::get;
 use axum::Router;
 use std::sync::Arc;
+use crate::infra::user_repository::InMemoryUserRepository;
 
 #[tokio::main]
 async fn main() {
