@@ -8,12 +8,9 @@ version = "0.1.0"
 dependencies = [
  "account-domain",
  "account-infra",
- "account-libs",
- "async-trait",
  "axum",
  "sea-orm",
  "serde",
- "serde_json",
  "tokio",
  "tracing",
  "tracing-subscriber",
@@ -34,8 +31,6 @@ dependencies = [
  "account-domain",
  "account-infra-orm",
  "sea-orm",
- "tokio",
- "uuid",
 ]
 
 [[package]]
@@ -49,9 +44,6 @@ dependencies = [
 [[package]]
 name = "account-libs"
 version = "0.1.0"
-dependencies = [
- "async-trait",
-]
 
 [[package]]
 name = "account-migration"

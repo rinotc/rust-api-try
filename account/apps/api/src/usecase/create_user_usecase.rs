@@ -1,7 +1,7 @@
+use account_domain::user::user::User;
+use account_domain::user::user_repository::UserRepository;
 use std::sync::Arc;
 use tracing::{error, instrument};
-use account_domain::user::user::{User, UserRole};
-use account_domain::user::user_repository::UserRepository;
 
 #[derive(Debug)]
 pub struct CreateUserInput {
@@ -10,12 +10,12 @@ pub struct CreateUserInput {
 
 pub enum CreateUserOutput {
     Success(User),
-    Error
+    Error,
 }
 
 #[derive(Clone)]
 pub struct CreateUserUseCase {
-    user_repository: Arc<dyn UserRepository>
+    user_repository: Arc<dyn UserRepository>,
 }
 
 impl CreateUserUseCase {
