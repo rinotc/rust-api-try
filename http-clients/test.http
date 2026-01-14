@@ -2,11 +2,12 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "name": "Tanaka Taro"
+  "name": "Tanaka Taro",
+  "email": "tanaka.taro@invalid"
 }
 
 ###
-GET http://localhost:3000/users/440b2ed4-27ac-4b3c-b026-359459cb6ccb
+GET http://localhost:3000/users/948d49f9-e1df-49a5-a06a-e0734a8252c2
 Accept: application/json
 
 ###

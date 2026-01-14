@@ -1,11 +1,11 @@
 use crate::usecase::get_user_usecase::GetUserUseCase;
 use axum::extract::FromRef;
 use std::sync::Arc;
-use crate::usecase::create_user_usecase::CreateUserUseCase;
+use crate::usecase::register_user_usecase::RegisterUserUseCase;
 
 pub struct AppState {
     pub get_user_usecase: GetUserUseCase,
-    pub create_user_usecase: CreateUserUseCase
+    pub create_user_usecase: RegisterUserUseCase
 }
 
 impl FromRef<Arc<AppState>> for GetUserUseCase {
@@ -14,7 +14,7 @@ impl FromRef<Arc<AppState>> for GetUserUseCase {
     }
 }
 
-impl FromRef<Arc<AppState>> for CreateUserUseCase {
+impl FromRef<Arc<AppState>> for RegisterUserUseCase {
     fn from_ref(state: &Arc<AppState>) -> Self {
         state.create_user_usecase.clone()
     }

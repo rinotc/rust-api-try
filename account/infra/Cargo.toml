@@ -6,4 +6,7 @@ edition = "2024"
 [dependencies]
 account-domain = { workspace = true }
 account-infra-orm = { workspace = true }
+account-libs = { workspace = true }
 sea-orm = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }

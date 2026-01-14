@@ -15,10 +15,12 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Users::UserId)
                             .uuid()
                             .not_null()
-                            .primary_key()
+                            .primary_key(),
                     )
                     .col(string(Users::Name).not_null())
+                    .col(string(Users::Status).not_null())
                     .col(string(Users::Role).not_null())
+                    .col(string(Users::Email).not_null())
                     .to_owned(),
             )
             .await
@@ -37,5 +39,7 @@ enum Users {
     Table,
     UserId,
     Name,
-    Role
+    Status,
+    Role,
+    Email,
 }
