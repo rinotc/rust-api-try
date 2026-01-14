@@ -13,7 +13,7 @@ fi
 
 # 2. DATABASE_URLが設定されていない場合はデフォルト値（ローカルDocker）を使用
 if [ -z "${DATABASE_URL:-}" ]; then
-  export DATABASE_URL="postgres://user:password@localhost:5432/myapp"
+  export DATABASE_URL="postgres://account_user:account_password@localhost:5432/account"
   echo "DATABASE_URL が設定されていません。デフォルト値を使用します: $DATABASE_URL"
 fi
 
